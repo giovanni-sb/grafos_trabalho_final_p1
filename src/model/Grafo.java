@@ -17,6 +17,15 @@ public class Grafo {
         return v;
     }
 
+    public boolean hasVertice(final String nome) {
+        for (Vertice vertice : listaVertices) {
+            if (vertice.getNome() == nome) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Vertice> getListaVertices() {
         return listaVertices;
     }
