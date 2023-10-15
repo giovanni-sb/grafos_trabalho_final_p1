@@ -6,6 +6,8 @@ import java.util.*;
 public class GerarGrafo {
 
     public static void main(String[] args) {
+        
+
         List<Vertice> listaVertices = new ArrayList<>();
         Set<String> nodosDuplicados = new HashSet<>();
         Set<String> nodosNegativos = new HashSet<>();
