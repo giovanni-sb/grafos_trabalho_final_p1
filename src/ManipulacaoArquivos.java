@@ -9,9 +9,42 @@ public class ManipulacaoArquivos {
     }
 
     public static void criarDiretorios(String pastaPrincipal) {
-        // Código para criar diretórios
-        // ...
+        String configuracaoPath = pastaPrincipal + "\\Configuracao\\config.txt";
 
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(configuracaoPath));
+            String line;
+            String processadoDir = null;
+            String naoProcessadoDir = null;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Processado=")) {
+                    processadoDir = line.replace("➔ Processado=", "");
+                } else if (line.contains("Não Processado=")) {
+                    naoProcessadoDir = line.replace("➔ Não Processado=", "");
+                }
+            }
+
+            if (processadoDir != null) {
+                criarDiretorio(processadoDir);
+            }
+            if (naoProcessadoDir != null) {
+                criarDiretorio(naoProcessadoDir);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void criarDiretorio(String path) {
+        File diretorio = new File(path);
+        if (!diretorio.exists()) {
+            if (diretorio.mkdirs()) {
+                System.out.println("Diretório criado: " + path);
+            } else {
+                System.err.println("Erro ao criar o diretório: " + path);
+            }
+        }
     }
 
     public static void processarArquivosRota(String pastaPrincipal) {
@@ -49,8 +82,8 @@ public class ManipulacaoArquivos {
                 } else if (line.startsWith("02")) {
                     // Processar linha de resumo de pesos
                 }
-                // Você pode adicionar mais condições conforme necessário para outros tipos de linha.
             }
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
