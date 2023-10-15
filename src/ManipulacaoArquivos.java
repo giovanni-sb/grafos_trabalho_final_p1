@@ -85,14 +85,30 @@ public class ManipulacaoArquivos {
                     String linhaNo = line.substring(2);
                     String nomeNoOrigem = linhaNo.split("=")[0];
                     String nomeNoDestino = linhaNo.split("=")[1];
+                    //adiciona vertice caso não exista 
+                    Vertice noOrigem, noDestino;
                     if(!grafo.hasVertice(nomeNoOrigem)){
-                        grafo.addVertice(nomeNoOrigem);
+                        noOrigem = grafo.addVertice(nomeNoOrigem);
+                    } else {
+                        noOrigem = grafo.getVerticeByName(nomeNoOrigem);
                     }
                     if(!grafo.hasVertice(nomeNoDestino)){
-                        grafo.addVertice(nomeNoDestino);
+                        noDestino = grafo.addVertice(nomeNoDestino);
+                    } else {
+                        noDestino = grafo.getVerticeByName(nomeNoDestino);
                     }
+                    adicionaAresta(grafo, noOrigem, noDestino, 0);
                 } else if (line.startsWith("02")) {
                     // Processar linha de resumo de pesos
+                    String linhaPeso = line.substring(2);
+                    String nomeNoOrigem = linhaPeso.split(";")[0];
+                    String nomeNoDestino = linhaPeso.split(";")[1].split("=")[0];
+                    String pesoArestaString = linhaPeso.split("=")[1];
+                    int pesoAresta = Integer.parseInt(pesoArestaString);
+                    Vertice noOrigem = grafo.getVerticeByName(nomeNoOrigem);
+                    Vertice noDestino = grafo.getVerticeByName(nomeNoDestino);
+                    //adicona o peso numa aresta existente
+                    adicionaPesoAresta(grafo, noOrigem, noDestino, pesoAresta);
                 } else if (line.startsWith("09")) {
                     // Processar linha de trailer
                 } 
@@ -101,5 +117,15 @@ public class ManipulacaoArquivos {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void adicionaAresta(Grafo grafo, Vertice origem, 
+                                        Vertice destino, int peso){
+        grafo.addAresta(origem, destino, peso);
+    }
+
+    public static void adicionaPesoAresta(Grafo grafo, Vertice origem, 
+                                        Vertice destino, int peso){
+        grafo.getAresta(origem, destino).setPeso(peso);
     }
 }

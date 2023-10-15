@@ -26,6 +26,15 @@ public class Grafo {
         return false;
     }
 
+    public Vertice getVerticeByName(final String nome) {
+        for (Vertice vertice : listaVertices) {
+            if(vertice.getNome() == nome) {
+                return vertice;
+            }
+        }
+        return null;
+    }
+
     public List<Vertice> getListaVertices() {
         return listaVertices;
     }
@@ -34,6 +43,21 @@ public class Grafo {
         Aresta a = new Aresta(origem, destino);
         origem.getAdj().add(a);
         return a;
+    }
+
+    public Aresta addAresta(final Vertice origem, final Vertice destino, final int peso) {
+        Aresta a = new Aresta(origem, destino, peso);
+        origem.getAdj().add(a);
+        return a;
+    }
+
+    public Aresta getAresta(final Vertice origem, final Vertice destino){
+        for (Aresta aresta : origem.getAdj()) {
+            if (aresta.getDestino().equals(destino)){
+                return aresta;
+            }
+        }
+        return null;
     }
 
     public int getDegree(Vertice vertice) {
