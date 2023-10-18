@@ -137,6 +137,12 @@ public class ManipulacaoArquivos {
                     adicionaPesoAresta(grafo, noOrigem, noDestino, pesoAresta);
                 } else if (line.startsWith("09")) {
                     // Processar linha de trailer
+                    String linhaTrailer = line.substring(2);
+                    String linhaRC = linhaTrailer.split(";")[0];
+                    String linhaRP = linhaTrailer.split(";")[1];
+                    String linhaPesoTotal = linhaTrailer.split(";")[2];
+                    int resumoConexao = Integer.parseInt(linhaRC.split("=")[1]);
+                    int resumoPesos = Integer.parseInt(linhaRP.split("=")[1]);
                 } else {
                     throw new Exception("Erro ao ler linha do arquivo rota, formato da linha incompativel: "+line);
                 }
