@@ -147,6 +147,7 @@ public class ManipulacaoArquivos {
                     Vertice noDestino = grafo.getVerticeByName(nomeNoDestino);
                     //adicona o peso numa aresta existente
                     adicionaPesoAresta(grafo, noOrigem, noDestino, pesoAresta);
+                    somaPesosLinhas += pesoAresta;
                 } else if (line.startsWith("09")) {
                     // Processar linha de trailer
                     String linhaTrailer = line.substring(2);
@@ -159,6 +160,15 @@ public class ManipulacaoArquivos {
                 } else {
                     throw new Exception("Erro ao ler linha do arquivo rota, formato da linha incompativel: "+line);
                 }
+            }
+            if (somaPesosHeader != somaPesosLinhas) {
+                throw new Exception("Soma dos pesos difere (Valor do Registro HEADER = "+ somaPesosHeader +" e Soma total dos Pesos = "+ somaPesosLinhas +"): ");
+            }
+            if (somaPesosTrailer != somaPesosLinhas) {
+                throw new Exception("Soma dos pesos difere (Valor do Registro TRAILER = "+ somaPesosTrailer +" e Soma total dos Pesos = "+ somaPesosLinhas +"): ");
+            }
+            if (somaPesosHeader != somaPesosTrailer) {
+                throw new Exception("Soma dos pesos difere (Valor do Registro TRAILER = "+ somaPesosTrailer +" e Valor do Registro HEADER = "+ somaPesosHeader +"): ");
             }
             reader.close();
             System.out.println(grafo);
