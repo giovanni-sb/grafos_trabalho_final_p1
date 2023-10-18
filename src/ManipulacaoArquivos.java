@@ -121,8 +121,17 @@ public class ManipulacaoArquivos {
                 } else if (line.startsWith("01")) {
                     // Processar linha de resumo de conexões
                     String linhaNo = line.substring(2);
-                    String nomeNoOrigem = linhaNo.split("=")[0];
-                    String nomeNoDestino = linhaNo.split("=")[1];
+                    String nomeNoOrigem = null;
+                    String nomeNoDestino = null;
+                    try {
+                        nomeNoOrigem = linhaNo.split("=")[0];
+                        nomeNoDestino = linhaNo.split("=")[1];
+                        if (nomeNoOrigem.length() > 2 || nomeNoDestino.length() >2) {
+                            throw new Exception("Tamanho do nome do nó inválido, limite 2 caracteres");
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        throw new Exception("Linha do resumo de conexões inválida: "+line);
+                    }
                     //adiciona vertice caso não exista 
                     Vertice noOrigem, noDestino;
                     if(!grafo.hasVertice(nomeNoOrigem)){
