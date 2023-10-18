@@ -103,7 +103,11 @@ public class ManipulacaoArquivos {
 
     public static void processarArquivoRota(File arquivo) throws Exception {
         int totalNoArquivo = 0;
-        int somaPesos = 0;
+        int somaPesosHeader = 0;
+        int somaPesosLinhas = 0;
+        int resumoConexao = 0;
+        int resumoPesos = 0;
+        int somaPesosTrailer = 0;
         Grafo grafo = new Grafo();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(arquivo));
@@ -113,7 +117,7 @@ public class ManipulacaoArquivos {
                 if (line.startsWith("00")) {
                     // Processar linha de cabeçalho
                     totalNoArquivo = Integer.parseInt(line.substring(2,4));
-                    somaPesos = Integer.parseInt(line.substring(4));
+                    somaPesosLinhas = Integer.parseInt(line.substring(4));
                 } else if (line.startsWith("01")) {
                     // Processar linha de resumo de conexões
                     String linhaNo = line.substring(2);
@@ -149,9 +153,9 @@ public class ManipulacaoArquivos {
                     String linhaRC = linhaTrailer.split(";")[0];
                     String linhaRP = linhaTrailer.split(";")[1];
                     String linhaPesoTotal = linhaTrailer.split(";")[2];
-                    int resumoConexao = Integer.parseInt(linhaRC.split("=")[1]);
-                    int resumoPesos = Integer.parseInt(linhaRP.split("=")[1]);
-                    int pesosTotais = Integer.parseInt(linhaPesoTotal);
+                    resumoConexao = Integer.parseInt(linhaRC.split("=")[1]);
+                    resumoPesos = Integer.parseInt(linhaRP.split("=")[1]);
+                    somaPesosLinhas = Integer.parseInt(linhaPesoTotal);
                 } else {
                     throw new Exception("Erro ao ler linha do arquivo rota, formato da linha incompativel: "+line);
                 }
