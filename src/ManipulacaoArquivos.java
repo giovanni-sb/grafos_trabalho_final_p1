@@ -153,22 +153,14 @@ public class ManipulacaoArquivos {
                     String linhaTrailer = line.substring(2);
                     String linhaRC = linhaTrailer.split(";")[0];
                     String linhaRP = linhaTrailer.split(";")[1];
-                    String linhaPesoTotal = linhaTrailer.split(";")[2];
                     resumoConexao = Integer.parseInt(linhaRC.split("=")[1]);
                     resumoPesos = Integer.parseInt(linhaRP.split("=")[1]);
-                    somaPesosLinhas = Integer.parseInt(linhaPesoTotal);
                 } else {
                     throw new Exception("Erro ao ler linha do arquivo rota, formato da linha incompativel: "+line);
                 }
             }
             if (somaPesosHeader != somaPesosLinhas) {
                 throw new Exception("Soma dos pesos difere (Valor do Registro HEADER = "+ somaPesosHeader +" e Soma total dos Pesos = "+ somaPesosLinhas +"): ");
-            }
-            if (somaPesosTrailer != somaPesosLinhas) {
-                throw new Exception("Soma dos pesos difere (Valor do Registro TRAILER = "+ somaPesosTrailer +" e Soma total dos Pesos = "+ somaPesosLinhas +"): ");
-            }
-            if (somaPesosHeader != somaPesosTrailer) {
-                throw new Exception("Soma dos pesos difere (Valor do Registro TRAILER = "+ somaPesosTrailer +" e Valor do Registro HEADER = "+ somaPesosHeader +"): ");
             }
             reader.close();
             System.out.println(grafo);
