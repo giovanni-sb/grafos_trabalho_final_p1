@@ -93,7 +93,7 @@ public class ManipulacaoArquivos {
         }
     }
 
-    public static void processarArquivoRota(File arquivo) {
+    public static void processarArquivoRota(File arquivo) throws Exception {
         int totalNoArquivo = 0;
         int somaPesos = 0;
         Grafo grafo = new Grafo();
@@ -137,7 +137,9 @@ public class ManipulacaoArquivos {
                     adicionaPesoAresta(grafo, noOrigem, noDestino, pesoAresta);
                 } else if (line.startsWith("09")) {
                     // Processar linha de trailer
-                } 
+                } else {
+                    throw new Exception("Erro ao ler linha do arquivo rota, formato da linha incompativel: "+line);
+                }
             }
             reader.close();
             System.out.println(grafo);
