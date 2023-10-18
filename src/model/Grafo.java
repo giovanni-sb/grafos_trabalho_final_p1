@@ -19,7 +19,7 @@ public class Grafo {
 
     public boolean hasVertice(final String nome) {
         for (Vertice vertice : listaVertices) {
-            if (vertice.getNome() == nome) {
+            if (vertice.getNome().equals(nome)) {
                 return true;
             }
         }
