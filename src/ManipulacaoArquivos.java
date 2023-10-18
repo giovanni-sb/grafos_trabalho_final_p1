@@ -19,9 +19,9 @@ public class ManipulacaoArquivos {
             String naoProcessadoDir = null;
 
             while ((line = reader.readLine()) != null) {
-                if (line.contains("Processado=")) {
+                if (line.startsWith("Processado=")) {
                     processadoDir = line.replace("Processado=", "");
-                } else if (line.contains("Não Processado=")) {
+                } else if (line.startsWith("Não Processado=")) {
                     naoProcessadoDir = line.replace("Não Processado=", "");
                 }
             }
