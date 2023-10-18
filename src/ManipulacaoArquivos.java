@@ -1,19 +1,19 @@
 import java.io.*;
-import java.util.regex.*;
 import model.*;
 
 public class ManipulacaoArquivos {
     public static void main(String[] args) {
+        String diretorioAtual = System.getProperty("user.dir");
         String pastaPrincipal = "Teste";
-        criarDiretorios(pastaPrincipal);
+        criarDiretorios(diretorioAtual + File.separator + pastaPrincipal);
         processarArquivosRota(pastaPrincipal);
     }
 
     public static void criarDiretorios(String pastaPrincipal) {
-        String configuracaoPath = pastaPrincipal + "/Configuracao/config.txt";
-
+        String configuracaoPath = pastaPrincipal + File.separator + "Configuracao";
+        
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(configuracaoPath));
+            BufferedReader reader = new BufferedReader(new FileReader(configuracaoPath+File.separator+"config.txt"));
             String line;
             String processadoDir = null;
             String naoProcessadoDir = null;
@@ -32,7 +32,30 @@ public class ManipulacaoArquivos {
             if (naoProcessadoDir != null) {
                 criarDiretorio(naoProcessadoDir);
             }
+        } catch (FileNotFoundException e) {
+            criarDiretorio(configuracaoPath);
+            criarArquivoConfig(configuracaoPath);
+            criarDiretorios(pastaPrincipal);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void criarArquivoConfig(String configuracaoPath) {
+        File arquivo = new File(configuracaoPath+File.separator+"config.txt");
+        try {
+            if (arquivo.createNewFile()){
+                try {
+                    FileWriter writer = new FileWriter(arquivo);
+                    writer.write("Processado=Teste"+File.separator+"Processado"+System.lineSeparator()+"Não Processado=Teste"+File.separator+"NaoProcessado"+System.lineSeparator());
+                    writer.close();
+                } catch (IOException e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -64,6 +87,9 @@ public class ManipulacaoArquivos {
                     }
                 }
             }
+        } else {
+            System.out.println("Nenhum arquivo de rota encontrado no caminho:\n"+
+            pastaPrincipal);
         }
     }
 
@@ -114,6 +140,7 @@ public class ManipulacaoArquivos {
                 } 
             }
             reader.close();
+            System.out.println(grafo);
         } catch (IOException e) {
             e.printStackTrace();
         }

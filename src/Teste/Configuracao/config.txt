@@ -1,0 +1,2 @@
+Processado=Teste/Processado
+Não Processado=Teste/NaoProcessado
