@@ -5,11 +5,16 @@ public class ManipulacaoArquivos {
     public static void main(String[] args) {
         String diretorioAtual = System.getProperty("user.dir");
         String pastaPrincipal = "Teste";
-        criarDiretorios(diretorioAtual + File.separator + pastaPrincipal);
+        try {
+            criarDiretorios(diretorioAtual + File.separator + pastaPrincipal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
         processarArquivosRota(pastaPrincipal);
     }
 
-    public static void criarDiretorios(String pastaPrincipal) {
+    public static void criarDiretorios(String pastaPrincipal) throws Exception {
         String configuracaoPath = pastaPrincipal + File.separator + "Configuracao";
         
         try {
@@ -25,11 +30,14 @@ public class ManipulacaoArquivos {
                     naoProcessadoDir = line.replace("Não Processado=", "");
                 }
             }
-
-            if (processadoDir != null) {
+            if (processadoDir == null){
+                throw new Exception("Arquivo config.txt não possuí destino para arquivos processados corretamente");
+            } else if(processadoDir != null) {
                 criarDiretorio(processadoDir);
             }
-            if (naoProcessadoDir != null) {
+            if (naoProcessadoDir == null){
+                throw new Exception("Arquivo config.txt não possuí destino para arquivos não processados corretamente");
+            } else if (naoProcessadoDir != null) {
                 criarDiretorio(naoProcessadoDir);
             }
         } catch (FileNotFoundException e) {
@@ -78,10 +86,10 @@ public class ManipulacaoArquivos {
                 if (arquivo.getName().startsWith("rota") && arquivo.getName().endsWith(".txt")) {
                     try {
                         processarArquivoRota(arquivo);
-                        File destino = new File(pastaPrincipal + "/Processado/" + arquivo.getName());
+                        File destino = new File(pastaPrincipal +File.separator+ "Processado" +File.separator+ arquivo.getName());
                         arquivo.renameTo(destino);
                     } catch (Exception e) {
-                        File destino = new File(pastaPrincipal + "/NãoProcessado/" + arquivo.getName());
+                        File destino = new File(pastaPrincipal +File.separator+ "NaoProcessado" +File.separator+ arquivo.getName());
                         arquivo.renameTo(destino);
                         e.printStackTrace();
                     }
@@ -143,6 +151,7 @@ public class ManipulacaoArquivos {
                     String linhaPesoTotal = linhaTrailer.split(";")[2];
                     int resumoConexao = Integer.parseInt(linhaRC.split("=")[1]);
                     int resumoPesos = Integer.parseInt(linhaRP.split("=")[1]);
+                    int pesosTotais = Integer.parseInt(linhaPesoTotal);
                 } else {
                     throw new Exception("Erro ao ler linha do arquivo rota, formato da linha incompativel: "+line);
                 }
