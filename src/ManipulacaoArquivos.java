@@ -105,9 +105,13 @@ public class ManipulacaoArquivos {
         int totalNoArquivo = 0;
         int somaPesosHeader = 0;
         int somaPesosLinhas = 0;
+        int numeroLinhasConexao = 0;
+        int numeroLinhasPesos = 0;
         int resumoConexao = 0;
         int resumoPesos = 0;
         int somaPesosTrailer = 0;
+        int caractersHeader = 0;
+        int totalNoHeader = 0;
         Grafo grafo = new Grafo();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(arquivo));
@@ -116,8 +120,9 @@ public class ManipulacaoArquivos {
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("00")) {
                     // Processar linha de cabeçalho
-                    totalNoArquivo = Integer.parseInt(line.substring(2,4));
-                    somaPesosLinhas = Integer.parseInt(line.substring(4));
+                    caractersHeader = line.length();
+                    totalNoHeader = Integer.parseInt(line.substring(2,4));
+                    somaPesosHeader = Integer.parseInt(line.substring(4));
                 } else if (line.startsWith("01")) {
                     // Processar linha de resumo de conexões
                     String linhaNo = line.substring(2);
@@ -136,15 +141,18 @@ public class ManipulacaoArquivos {
                     Vertice noOrigem, noDestino;
                     if(!grafo.hasVertice(nomeNoOrigem)){
                         noOrigem = grafo.addVertice(nomeNoOrigem);
+                        totalNoArquivo++;
                     } else {
                         noOrigem = grafo.getVerticeByName(nomeNoOrigem);
                     }
                     if(!grafo.hasVertice(nomeNoDestino)){
                         noDestino = grafo.addVertice(nomeNoDestino);
+                        totalNoArquivo++;
                     } else {
                         noDestino = grafo.getVerticeByName(nomeNoDestino);
                     }
                     adicionaAresta(grafo, noOrigem, noDestino, 0);
+                    numeroLinhasConexao += 1;
                 } else if (line.startsWith("02")) {
                     // Processar linha de resumo de pesos
                     String linhaPeso = line.substring(2);
@@ -157,22 +165,36 @@ public class ManipulacaoArquivos {
                     //adicona o peso numa aresta existente
                     adicionaPesoAresta(grafo, noOrigem, noDestino, pesoAresta);
                     somaPesosLinhas += pesoAresta;
+                    numeroLinhasPesos += 1;
                 } else if (line.startsWith("09")) {
                     // Processar linha de trailer
                     String linhaTrailer = line.substring(2);
                     String linhaRC = linhaTrailer.split(";")[0];
                     String linhaRP = linhaTrailer.split(";")[1];
-                    resumoConexao = Integer.parseInt(linhaRC.split("=")[1]);
-                    resumoPesos = Integer.parseInt(linhaRP.split("=")[1]);
+                    resumoConexao = Integer.parseInt(linhaRC);
+                    resumoPesos = Integer.parseInt(linhaRP);
                 } else {
                     throw new Exception("Erro ao ler linha do arquivo rota, formato da linha incompativel: "+line);
                 }
             }
+            if (caractersHeader > 9){
+                throw new Exception("Header inválido.");
+            }
             if (somaPesosHeader != somaPesosLinhas) {
                 throw new Exception("Soma dos pesos difere (Valor do Registro HEADER = "+ somaPesosHeader +" e Soma total dos Pesos = "+ somaPesosLinhas +"): ");
             }
+            if (totalNoHeader != totalNoArquivo){
+                throw new Exception("Número totais de nós inválido.");
+            }
+
+            if (numeroLinhasConexao != resumoConexao) {
+                throw new Exception("Número de linhas do resumo de conexão ("+numeroLinhasConexao+") não bate com o informado no TRAILER ("+resumoConexao+")");
+            }
+            if (numeroLinhasPesos != resumoPesos) {
+                throw new Exception("Número de linhas do resumo de pesos ("+numeroLinhasPesos+") não bate com o informado no TRAILER ("+resumoPesos+")");
+            }
             reader.close();
-            System.out.println(grafo);
+            //System.out.println(grafo);
         } catch (IOException e) {
             e.printStackTrace();
         }
